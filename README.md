@@ -1,0 +1,2 @@
+# CoRE
+Continuity Refactor Engine
