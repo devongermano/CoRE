@@ -1,7 +1,3 @@
-Below is a comprehensive, implementation‑oriented document for **CoRE** (Continuity Refactor Engine): a system that continuously **understands**, **plans**, **edits**, and **verifies** large‑scale narrative documents (e.g., novels) in response to global changes (e.g., character profile updates) while guarding continuity and spoilers. I’ve grounded the design in peer‑reviewed and recent academic work and cited the key results that motivate each component.
-
----
-
 # CoRE — Continuity Refactor Engine
 
 *A practical architecture for global, document‑scale, semantically consistent refactoring of long narratives*
