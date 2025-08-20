@@ -1,6 +1,6 @@
 # <img src="https://github.com/user-attachments/assets/df3f4f4c-0ccb-4139-8ec9-b11ed93c12ac" width="40" height="40" align="left"> CoRE — Continuity Oriented Refactoring Engine
 
-**A practical architecture for global, document-scale, semantically consistent refactoring of long narratives**
+**A practical architecture for global, library-scale, semantically consistent refactoring of long narratives**
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/df3f4f4c-0ccb-4139-8ec9-b11ed93c12ac" width="200" height="200" alt="CoRE Logo">
