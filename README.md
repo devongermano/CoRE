@@ -58,19 +58,41 @@ Long‑context LLMs are **not** a magic wand for book‑length editing: they fre
 
 ## How It Works (Architecture)
 
-````mermaid
+```mermaid
 flowchart LR
-  A[Ingest & Routing]\n(BM25 + FAISS, structure-aware chunking) --> B[Long-Reader Core]\n\n  subgraph B[Long-Reader Core]\n    B1[InfiniRetri streaming]\n    B2[RetrievalAttention / Cascading KV / DuoAttention]\n  end\n\n  B --> C[World Model]\n  subgraph C[World Model]\n    C1[Entities & Coref]\n    C2[Events & Timelines]\n    C3[Span Provenance]\n  end\n\n  C --> D[Refactor Planner]\n  D --> E[Rewrite Executor]\n  E --> F[Verifier]\n  F --> G[Human-in-the-loop UI]\n```
+  %% Fixed: combine subtext into the node label (no stray parentheses),
+  %% avoid id/subgraph name collisions, and link to internal nodes.
+
+  A["Ingest & Routing<br/>BM25 + FAISS, structure-aware chunking"] --> L1
+
+  subgraph LRcore[Long-Reader Core]
+    L1[InfiniRetri streaming]
+    L2[RetrievalAttention / Cascading KV / DuoAttention]
+    L1 -. feeds .-> L2
+  end
+
+  L1 --> W1
+  subgraph WM[World Model]
+    W1[Entities & Coref]
+    W2[Events & Timelines]
+    W3[Span Provenance]
+  end
+
+  W1 --> PL[Refactor Planner]
+  PL --> EX[Rewrite Executor]
+  EX --> VF[Verifier]
+  VF --> UI[Human-in-the-loop UI]
+```
 
 ### Core Responsibilities
 
-1. **Understand** → build/maintain the **World Model** (entities, attributes, relations; events with temporal order) with span provenance. [3]
+1. **Understand** → build/maintain the **World Model** (entities, attributes, relations; events with temporal order) with span provenance. \[3]
 2. **Plan** → apply an **Edit Specification** (DSL) and compute the **impact set** (direct + implied ripples), scoped by acts/POVs with spoiler guards.
-3. **Edit** → generate **minimal‑diff** patches using **constraint‑aware decoding** that satisfy global constraints (facts, tone, timeline). [8]
-4. **Verify** → run NLI/discourse consistency, contradiction checks (for multi‑source inputs), and **spoiler** filters; only then propose diffs. [6, 7, 9]
+3. **Edit** → generate **minimal‑diff** patches using **constraint‑aware decoding** that satisfy global constraints (facts, tone, timeline). \[8]
+4. **Verify** → run NLI/discourse consistency, contradiction checks (for multi‑source inputs), and **spoiler** filters; only then propose diffs. \[6, 7, 9]
 5. **Orchestrate** → surface git‑style diffs with reasons, confidence, and audit trails.
 
-> **Evidence basis:** Long‑window weaknesses [1, 14], training‑free efficiency [2, 10–13], event‑centric reasoning [3, 4], document‑level editing difficulty [5], verification efficacy [6, 7, 9, 16].
+> **Evidence basis:** Long‑window weaknesses \[1, 14], training‑free efficiency \[2, 10–13], event‑centric reasoning \[3, 4], document‑level editing difficulty \[5], verification efficacy \[6, 7, 9, 16].
 
 ---
 
@@ -94,7 +116,7 @@ pip install -e .[all]
 
 # Optional: FAISS / torch with CUDA
 # See PyTorch + FAISS installation pages for your platform
-````
+```
 
 ### Project Layout (reference)
 
@@ -354,7 +376,6 @@ If you use CoRE in academic work, please cite this repository and the motivating
 \[16] *MMoE: Robust Spoiler Detection with Multi‑ ...* — arXiv.
 
 > Full URLs are preserved in the source design and can be mirrored in a `docs/references.md` if desired.
-
 
 
 
