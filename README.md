@@ -9,7 +9,7 @@
   <a href="#references"><img alt="papers" src="https://img.shields.io/badge/papers-17%20citations-orange" /></a>
 </p>
 
-> **One‑liner:** Given a very long manuscript and a high‑level change (e.g., “Marisol is Peruvian, not French”), **CoRE** finds all impacted spans, plans ripple effects, proposes minimal, style‑preserving rewrites under **global constraints**, and **verifies** factual/temporal consistency and spoiler safety before you hit *merge*.
+> **TLDR:** Given a very long manuscript and a high‑level change (e.g., “Marisol is Peruvian, not French”), **CoRE** finds all impacted spans, plans ripple effects, proposes minimal, style‑preserving rewrites under **global constraints**, and **verifies** factual/temporal consistency and spoiler safety before you hit *merge*.
 
 ---
 
