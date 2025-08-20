@@ -104,7 +104,7 @@ flowchart LR
 
 ```bash
 # Clone
-git clone https://github.com/your-org/core.git
+git clone https://github.com/devongermano/CoRE.git
 cd core
 
 # Create environment (choose one)
