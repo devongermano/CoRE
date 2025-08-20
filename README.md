@@ -56,7 +56,7 @@
   * **Lexical** (BM25) for high‑precision keyword hits (e.g., passport/visa/brand mentions).
 * **Why**: Route the long‑reader only to likely‑relevant files/scenes; don’t stream the whole corpus every time. This aligns with evidence that long‑context alone is brittle and cost‑heavy. ([arXiv][1])
 
-### 2.2 Long‑Reader Core (training‑free, scalable)
+### Long‑Reader Core (training‑free, scalable)
 
 * **Primary mode — InfiniRetri loop.** For each routed chapter, iterate through chunks (e.g., 1–2K tokens). After a forward pass, **extract final‑layer attention**, select **top‑K salient sentences** (smoothing over tokens), and **carry them forward** as a compact memory. This yields an “infinite” effective read without quadratic attention, demonstrated on million‑token needle tests and long‑doc QA. ([arXiv][2])
 * **Acceleration knobs (optional):**
@@ -269,12 +269,6 @@ edit:
   **Discourse‑driven long‑doc inconsistency** (segment by discourse structure). ([arXiv][7])
   **Contradiction detection in RAG contexts** (context validators are still hard). ([arXiv][9])
   **Spoiler detection (MMoE, genre‑aware)**. ([arXiv][16])
-
----
-
-### Closing Note
-
-This design is intentionally **engine‑first** and **training‑free** where possible: you can implement it today with open‑weight models and standard libraries. It piggybacks on strong, recent evidence that selective, attention‑guided reading plus explicit world modeling—and edits executed under constraints with rigorous verification—yields the most reliable path for **global, narrative‑scale refactoring**.
 
 [1]: https://arxiv.org/abs/2307.03172?utm_source=chatgpt.com "Lost in the Middle: How Language Models Use Long Contexts"
 [2]: https://arxiv.org/abs/2502.12962?utm_source=chatgpt.com "Infinite Retrieval: Attention Enhanced LLMs in Long ..."
