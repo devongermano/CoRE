@@ -2,7 +2,7 @@
 
 *A practical architecture for global, document‑scale, semantically consistent refactoring of long narratives*
 
-## 0) What is it?
+## What is it?
 
 **TLDR.** Given a very long manuscript (hundreds of thousands of tokens) plus a high‑level edit (e.g., change a character’s nationality/traits), CoRE (a) **finds** every impacted span, (b) **plans** ripple effects across entities/events/timelines, (c) **proposes** minimal, style‑preserving rewrites under **global constraints**, and (d) **verifies** factual/temporal consistency and spoiler safety before commit.
 
@@ -16,7 +16,7 @@
 
 ---
 
-## 1) System Responsibilities
+## System Responsibilities
 
 1. **Understand:** Build and maintain a **World Model** (entities, attributes, relations; events with temporal order) from the evolving manuscript; keep span‑level provenance. ([ACL Anthology][3])
 2. **Plan:** Given an **Edit Specification**, compute the **impact set** (direct assertions + implied ripples), scoped by acts/POVs, with spoiler guards.
@@ -26,7 +26,7 @@
 
 ---
 
-## 2) End‑to‑End Architecture
+## End‑to‑End Architecture
 
 ```
              ┌───────────────────────────────────────────────────────────┐
@@ -47,7 +47,7 @@
              └───────────────────────────────────────────────────────────┘
 ```
 
-### 2.1 Ingest & Routing
+### Ingest & Routing
 
 * **Corpus**: Markdown chapters/notes; structure‑aware chunking by headings/scene markers.
 * **Dual index**:
@@ -67,7 +67,7 @@
 
 > **Why it matters:** Long‑window models often falter as length grows (RULER) and especially on mid‑context info (Lost in the Middle). Streaming + selective retention is more robust and cost‑effective in practice. ([arXiv][14])
 
-### 2.3 World Model (Story “Bible” with Span Provenance)
+### World Model (Story “Bible” with Span Provenance)
 
 * **Entities & Coreference:** Run document/book‑scale coref; unify all mentions of characters/props/places with links back to every asserting span. **BOOKCOREF** provides the first book‑scale benchmark (avg >200k tokens/book) and shows models improve markedly when trained/evaluated at this scale (+20 CoNLL‑F1)—use its pipeline/insights to guide modeling and evaluation. ([ACL Anthology][15])
 * **Event & Timeline Graph:** Extract events (subject‑verb‑object with time/place), causal/temporal links (before/after, act/scene indices), and attach provenance (spans). Recent **EventRAG** results show event‑centric representations improve multi‑document, temporal reasoning in narrative‑rich settings; CoRE adopts an Event‑KG schema. ([ACL Anthology][3])
@@ -75,7 +75,7 @@
 
 ---
 
-## 3) Edit Specification (CoRE‑DSL)
+## Edit Specification (CoRE‑DSL)
 
 A declarative DSL captures the “what” and the guardrails:
 
@@ -102,7 +102,7 @@ edit:
 
 ---
 
-## 4) Refactor Planner (Global)
+## Refactor Planner (Global)
 
 1. **Apply DSL to the graph:** Update entity attributes and event preconditions.
 2. **Compute impact set:**
@@ -114,7 +114,7 @@ edit:
 
 ---
 
-## 5) Rewrite Executor (Local, Many Sites)
+## Rewrite Executor (Local, Many Sites)
 
 For each impacted site:
 
@@ -124,7 +124,7 @@ For each impacted site:
 
 ---
 
-## 6) Verifier (Pre‑Merge Checks)
+## Verifier (Pre‑Merge Checks)
 
 1. **Factual consistency (local & doc‑level):** NLI‑style inconsistency detection (e.g., **SummaC**) compares the candidate patch to its supporting spans; proven lightweight and effective on multi‑dataset summary consistency, and remains a solid baseline checker. ([ACL Anthology][6])
 2. **Discourse‑aware long‑doc checks:** Weight contradictions by discourse importance and segment structure; recent work shows better detection for long summaries and complex sentences with a **discourse‑driven** approach. ([arXiv][7])
@@ -133,7 +133,7 @@ For each impacted site:
 
 ---
 
-## 7) Orchestration & UI
+## Orchestration & UI
 
 * **Diff bundles** grouped by *reason* (e.g., “nationality ripple → passport,” “habit removal → ashtray mentions”), with per‑patch **confidence**, **contradiction**, and **spoiler** signals.
 * **Traceability:** Every KG node and patch retains **span provenance** and **evidence links**; clicking a node shows all asserting spans and the proposed edits.
@@ -141,7 +141,7 @@ For each impacted site:
 
 ---
 
-## 8) Data & Model Choices (initial, practical stack)
+## Data & Model Choices (initial, practical stack)
 
 * **Long‑reader:** Any HF transformer that exposes attentions; apply **InfiniRetri** externally; add **RetrievalAttention** or **Cascading KV** for speed when needed. ([arXiv][2])
 * **Indexes:** FAISS (vector), BM25 (lexical).
@@ -152,7 +152,7 @@ For each impacted site:
 
 ---
 
-## 9) Why This Design (Evidence Synthesis)
+## Why This Design (Evidence Synthesis)
 
 * **Robustness over raw window size.** Long‑window models often **under‑use** long context and degrade as length grows; “lost‑in‑the‑middle” is persistent. CoRE’s streaming + salience retention aligns with empirical findings and avoids quadratic attention. ([arXiv][1])
 * **Training‑free scalability.** **InfiniRetri** (attention‑driven retrieval), **RetrievalAttention** (ANN over KV), **Cascading KV**, and **DuoAttention** show strong wins without fine‑tuning—ideal for immediate deployment on massive texts. ([arXiv][2])
@@ -162,7 +162,7 @@ For each impacted site:
 
 ---
 
-## 10) Evaluation Plan (make it measurable)
+## Evaluation Plan (make it measurable)
 
 1. **Reading at scale:** RULER / OneRULER + needle‑in‑haystack variants at your target lengths; track accuracy vs. context growth to show stability. ([arXiv][14])
 2. **Entity tracking:** BOOKCOREF metrics (CoNLL‑F1) on samples of your manuscript or similar texts. ([ACL Anthology][15])
@@ -171,7 +171,7 @@ For each impacted site:
 
 ---
 
-## 11) Implementation Roadmap
+## Implementation Roadmap
 
 **Phase 1 — Prototype (4–6 weeks)**
 
@@ -190,7 +190,7 @@ For each impacted site:
 
 ---
 
-## 12) Risk & Mitigations
+## Risk & Mitigations
 
 * **Coref drift across long books.** Use book‑scale models/datasets; verify with BOOKCOREF; boost with manual entity seeds (character lists). ([ACL Anthology][15])
 * **Over‑editing voice.** Enforce “minimal‑diff” and style similarity in constraints; prefer local paraphrase with preserved rhythm and punctuation.
@@ -199,7 +199,7 @@ For each impacted site:
 
 ---
 
-## 13) Appendix A — Minimal Data Schemas
+## Appendix A — Minimal Data Schemas
 
 **Entity (Character/Prop/Place)**
 
@@ -215,7 +215,7 @@ For each impacted site:
 
 ---
 
-## 14) Appendix B — Edit‑DSL Examples
+## Appendix B — Edit‑DSL Examples
 
 **(1) Habit removal + nationality change, scoped to Acts 1–2)**
 
